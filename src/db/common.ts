@@ -3,9 +3,6 @@ import Mongo from "./base";
 
 const lastTimestamps = new Map();
 
-const HISTORY = "history";
-const USERS = "users";
-
 /**
  * Update collection of all users.
  */
@@ -15,13 +12,7 @@ const updateUsers = async (users: SingleActivity[]): Promise<void> => {
     return;
   }
   users.forEach(async (user) => {
-    const updated = await Mongo.db
-      .collection(USERS)
-      .updateOne(
-        { uri: user.user.uri },
-        { $set: { ...user.user } },
-        { upsert: true }
-      );
+    const updated = await Mongo.updateUser(user.user);
     if (updated.modifiedCount !== 0) {
       console.log(`NEW USER - ${user.user.name}`);
     }
@@ -42,20 +33,14 @@ const hasChanged = async (
     return lastTimestamps.get(userUri) !== timestamp;
   }
 
-  // If nothing is stored in memory, query most recent document in database.
-  if (Mongo.client) {
-    const mostRecent = await Mongo.db
-      .collection(HISTORY)
-      .findOne({ "user.uri": userUri }, { sort: { timestamp: -1 } });
+  const mostRecent = await Mongo.getMostRecent(userUri);
 
-    if (!mostRecent) {
-      return true;
-    }
-    return mostRecent.timestamp !== timestamp;
-  } else {
-    // No mongo client found.
+  // No most recent entry found.
+  if (!mostRecent) {
     return true;
   }
+
+  return mostRecent.timestamp !== timestamp;
 };
 
 /**
@@ -66,9 +51,7 @@ const insertOneActivity = async (activity: SingleActivity): Promise<void> => {
 
   if (await hasChanged(user.uri, timestamp)) {
     console.log(`~~ ${user.name} is listening to - ${track.name}`);
-    if (Mongo.client) {
-      Mongo.db.collection(HISTORY).insertOne(activity);
-    }
+    await Mongo.insertHistory(activity);
     lastTimestamps.set(user.uri, timestamp);
   }
   // else {

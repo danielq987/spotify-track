@@ -6,16 +6,21 @@ import { scheduleJob } from "node-schedule";
 const run = async () => {
   await Mongo.init();
 
+  // Logs activities.
   const logActivities = async () => {
     const activity = await getActivity();
 
-    console.log(`========${new Date().toLocaleTimeString("en-US")}=======`);
-    await insertAllActivity(activity);
+    if (activity.friends) {
+      console.log(`========${new Date().toLocaleTimeString("en-US")}=======`);
+      await insertAllActivity(activity);
+    }
   };
 
   const trackUsers = async () => {
     const activity = await getActivity();
-    await updateUsers(activity.friends);
+    if (activity.friends) {
+      await updateUsers(activity.friends);
+    }
   };
 
   await logActivities();

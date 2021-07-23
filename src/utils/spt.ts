@@ -9,18 +9,26 @@ let accessToken: string;
 
 const getActivity = async () => {
   const getAccessToken = async () => {
+    if (!SPDC_COOKIE) {
+      console.error(
+        "Error: Please provide SP_DC cookie. See README.md for details."
+      );
+    }
     try {
       const { accessToken } = await getWebAccessToken(SPDC_COOKIE);
       return accessToken;
     } catch (error) {
       console.error(error);
-      return "";
     }
+    return "";
   };
 
   accessToken = await getAccessToken();
 
-  return await getFriendActivity(accessToken);
+  if (accessToken) {
+    return await getFriendActivity(accessToken);
+  }
+  return {};
 };
 
 export { getActivity };
