@@ -24,7 +24,7 @@ const run = async () => {
   };
 
   await logActivities();
-  await trackUsers();
+  // await trackUsers();
 
   scheduleJob("*/20 * * * * *", async () => {
     await logActivities();

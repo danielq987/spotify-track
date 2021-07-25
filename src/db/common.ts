@@ -32,7 +32,7 @@ const hasChanged = async (
   if (storedTimestamp) {
     return lastTimestamps.get(userUri) !== timestamp;
   }
-  console.log("querying");
+  // console.log("querying");
 
   const mostRecent = await Mongo.getMostRecent(userUri);
 
