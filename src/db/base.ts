@@ -1,9 +1,5 @@
 import { MongoClient, Db } from "mongodb";
-import {
-  SingleActivity,
-  uri,
-  User,
-} from "../../custom_typings/types";
+import { SingleActivity, uri, User } from "../../custom_typings/types";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -33,33 +29,29 @@ class Mongo {
     }
   }
 
-  async #execute(fn: Function) {
+  async #execute(fn: Promise<any>) {
     if (this.client) {
-      return await fn();
+      return await fn;
     }
   }
 
   async insertHistory(activity: SingleActivity) {
-    return await this.#execute(
-      async () => await this.db.collection(HISTORY).insertOne(activity)
-    );
+    return await this.#execute(this.db.collection(HISTORY).insertOne(activity));
   }
 
   async getMostRecent(userUri: uri) {
     return await this.#execute(
-      async () =>
-        await this.db
-          .collection(HISTORY)
-          .findOne({ "user.uri": userUri }, { sort: { timestamp: -1 } })
+      this.db
+        .collection(HISTORY)
+        .findOne({ "user.uri": userUri }, { sort: { timestamp: -1 } })
     );
   }
 
   async updateUser(user: User) {
     return await this.#execute(
-      async () =>
-        await this.db
-          .collection(USERS)
-          .updateOne({ uri: user.uri }, { $set: { ...user } }, { upsert: true })
+      this.db
+        .collection(USERS)
+        .updateOne({ uri: user.uri }, { $set: { ...user } }, { upsert: true })
     );
   }
 }
