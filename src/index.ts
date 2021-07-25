@@ -26,12 +26,12 @@ const run = async () => {
   await logActivities();
   await trackUsers();
 
-  scheduleJob("* * * * *", async () => {
+  scheduleJob("*/20 * * * * *", async () => {
     await logActivities();
   });
-  scheduleJob("0 * * * *", async () => {
-    await trackUsers();
-  });
+  // scheduleJob("0 0 * * *", async () => {
+  //   await trackUsers();
+  // });
 };
 
 run();
