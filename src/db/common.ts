@@ -32,6 +32,7 @@ const hasChanged = async (
   if (storedTimestamp) {
     return lastTimestamps.get(userUri) !== timestamp;
   }
+  console.log("querying");
 
   const mostRecent = await Mongo.getMostRecent(userUri);
 
@@ -52,8 +53,9 @@ const insertOneActivity = async (activity: SingleActivity): Promise<void> => {
   if (await hasChanged(user.uri, timestamp)) {
     console.log(`~~ ${user.name} is listening to - ${track.name}`);
     await Mongo.insertHistory(activity);
-    lastTimestamps.set(user.uri, timestamp);
   }
+
+  lastTimestamps.set(user.uri, timestamp);
   // else {
   //   console.log(`// ${user.name} - no update`);
   // }
