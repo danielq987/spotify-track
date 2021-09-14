@@ -51,7 +51,7 @@ const insertOneActivity = async (activity: SingleActivity): Promise<void> => {
   const { user, timestamp, track } = activity;
 
   if (await hasChanged(user.uri, timestamp)) {
-    console.log(`~~ ${user.name} is listening to - ${track.name}`);
+    console.log(`~~ ${user.name} is listening to - ${track.name} by ${track.artist}`);
     await Mongo.insertHistory(activity);
   }
 
