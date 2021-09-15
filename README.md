@@ -4,7 +4,7 @@ Track friend activity. Uses [Spotify Buddylist](https://github.com/valeriangalli
 
 ## Usage
 
-To use, an `sp_dc` cookie must be obtained from the [Spotify Web Player](https://open.spotify.com). Details on how can be found [here](https://github.com/valeriangalliat/spotify-buddylist#sp-dc-cookie).
+To use, an `sp_dc` cookie must be obtained from the [Spotify Web Player](https://open.spotify.com). Details on how can be found [here](https://github.com/valeriangalliat/spotify-buddylist#sp_dc-cookie).
 
 Clone the repo and create a `.env` file in the root directory, similar to what is seen below. The `DB_URI` parameter is optional, and if not provided, will simply log output to the console. Otherwise, data will be logged into the mongoDb database specified by the connection string.
 
